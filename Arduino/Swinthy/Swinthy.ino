@@ -38,12 +38,12 @@ void loop()
         while (true)
         {
           uView.line(x0,y0,x1,y1, WHITE, XOR);		// draw line from x0,y0 to x1,y1 using WHITE color and XOR draw mode
-          uView.line(max_x-x0,y0,max_x-x1,y1, WHITE, XOR);   // Mirror
+//          uView.line(max_x-x0,y0,max_x-x1,y1, WHITE, XOR);   // Mirror
           uView.display();
           delay(onDelay);   
       
           uView.line(x0,y0,x1,y1, WHITE,XOR);
-          uView.line(max_x-x0,y0,max_x-x1,y1, WHITE, XOR);		// Mirror
+//          uView.line(max_x-x0,y0,max_x-x1,y1, WHITE, XOR);		// Mirror
           uView.display();
           
           x0 += dx0;

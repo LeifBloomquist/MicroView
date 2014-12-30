@@ -22,8 +22,8 @@ void loop()
 	uView.display();
 	delay(500);
 
-        int max_x = 63;
-        int max_y = 47;
+        int max_x = 10;
+        int max_y = 40;
         
         int x0=random(max_x);
     	int x1=random(max_x);
@@ -37,12 +37,14 @@ void loop()
         
         while (true)
         {
-           uView.line(x0,y0,x1,y1, WHITE, XOR);		// draw line from x0,y0 to x1,y1 using WHITE color and XOR draw mode
+     //      uView.line(x0,y0,x1,y1, WHITE, XOR);		// draw line from x0,y0 to x1,y1 using WHITE color and XOR draw mode
         //  uView.line(max_x-x0,y0,max_x-x1,y1, WHITE, XOR);   // Mirror
 
-             uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
-      	  uView.setCursor(x0,y0);        
-          uView.print("Leif was here.");
+          uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
+      	  uView.setCursor(x0,y0);
+          char c = 3;      
+          uView.print("Ella ");
+          uView.print(c);
           uView.display();
           delay(onDelay);   
        

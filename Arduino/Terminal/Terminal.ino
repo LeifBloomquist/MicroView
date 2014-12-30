@@ -1,12 +1,17 @@
 /*
      Teminal Demo
 */
+
+
 #include <MicroView.h>
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(2, 3); // RX, TX
 
 void setup()
 {
   uView.begin();	// begin of MicroView  
-  Serial.begin(38400);
+  mySerial.begin(2400);
   clearscreen(); 
 }
 
@@ -16,16 +21,17 @@ void clearscreen()
   uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
   uView.setFontType(0);
   uView.setCursor(0,0);  
-  uView.println("READY.");  
+  uView.println("READY."); 
+  mySerial.println("READY.");  
   uView.display();
 }
   
 
 void loop() 
 {    
-    if (Serial.available() > 0)
+    if (mySerial.available() > 0)
     {
-       char c=Serial.read();
+       char c=mySerial.read();
        
        if (c == 1)  // CTRL-A, clear
        {
@@ -40,6 +46,6 @@ void loop()
  
        uView.print(c);
        uView.display();
-       Serial.print(c);  // Echo
+       mySerial.print(c);  // Echo
     }      
 }
