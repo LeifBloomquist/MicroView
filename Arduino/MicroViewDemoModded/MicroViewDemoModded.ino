@@ -19,7 +19,8 @@
 #include <Time.h>
 #include <SoftwareSerial.h>
 
-SoftwareSerial mySerial(2, 3); // RX, TX
+//SoftwareSerial mySerial(2, 3); // RX, TX
+HardwareSerial& mySerial = Serial;
 
 #define clocksize 24
 
