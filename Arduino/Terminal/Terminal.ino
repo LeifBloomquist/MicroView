@@ -1,20 +1,30 @@
 /*
-     Teminal and Screen Editor Demo for MicroView
-     Leif Bloomquist, leif@schemafactor.com
+     Teminal and Rudimentary Screen Editor Demo for MicroView
+     Leif Bloomquist
 */
 
 #include <MicroView.h>
 #include <elapsedMillis.h>
-#include <SoftwareSerial.h>
+
+;  // Keep this here to pacify the Arduino pre-processor
+
+//#define C64
+
+#ifdef C64
+  #include <SoftwareSerial.h>
+  #define BAUD 2400
+  SoftwareSerial mySerial(2, 3); // RX, TX
+#else
+  #define BAUD 2400
+  HardwareSerial& mySerial = Serial;
+#endif
 
 #define BLINK 333    // milliseconds
 #define SPACE 32
 
-//SoftwareSerial mySerial(2, 3); // RX, TX
-HardwareSerial& mySerial = Serial;
 
 // Global variables
-elapsedMillis cursorBlink = 0;
+elapsedMillis cursor_blink = 0;
 int columns = 0;
 int rows = 0;
 int current_column = 0;
@@ -30,10 +40,9 @@ char char_under_cursor = SPACE;
 void setup()
 {
   uView.begin();	// begin of MicroView  
-  mySerial.begin(2400);
-  clearscreen(); 
-  cursorBlink = 0;
-  
+  mySerial.begin(BAUD);
+
+  clearScreen();   
   putChar('R');
   putChar('E');
   putChar('A');
@@ -41,7 +50,10 @@ void setup()
   putChar('Y');
   putChar('.');
   nextLine();
+  
   mySerial.println("READY.");  
+  
+  cursor_blink = 0;
 }
 
 char i=0;
@@ -49,14 +61,14 @@ char i=0;
 void loop() 
 {
     // Blink Cursor
-    if (cursorBlink > BLINK)
+    if (cursor_blink > BLINK)
     {
-       cursorBlink = 0;
+       cursor_blink = 0;
        
        if (current_blink == 0)
        {
          current_blink = 1;  
-         char_under_cursor = getChar(current_row, current_column);
+         saveCharUnderCursor();
          setChar(current_row, current_column, char_under_cursor+128); // was 218 with font5x7
        }
        else // 1
@@ -86,8 +98,8 @@ void loop()
                   } 
                   break;        
                   
-         case 12:  // CTRL-L, clear terminal
-                  clearscreen();
+         case 12:  // CTRL-L, Clear terminal
+                  clearScreen();
                   mySerial.print(c);   // Echo it back
                   return;
                  
@@ -120,14 +132,14 @@ void loop()
 }
 
 
-void clearscreen()
+void clearScreen()
 {
   uView.clear(ALL);	// erase hardware memory inside the OLED controller
   uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
-  setupFont(0);
-  
-  uView.setCursor(0,0);
   uView.display();
+  
+  setupFont(0);  
+  uView.setCursor(0,0);
 
   current_column = 0;
   current_row = 0;
@@ -157,6 +169,7 @@ void putChar(char c)
      mySerial.print(c); 
        
      current_column++;   
+     saveCharUnderCursor();
      
      if (current_column >= columns)
      {
@@ -192,6 +205,7 @@ void nextLine()
    current_column = 0;
    current_row++;
    checkScroll();
+   saveCharUnderCursor();
    
    mySerial.println();
 }
@@ -228,6 +242,11 @@ void restoreCharUnderCursor()
   setChar(current_row, current_column, char_under_cursor); 
 }
 
+void saveCharUnderCursor()
+{
+  char_under_cursor = getChar(current_row, current_column);
+}
+
 void doEscapeSequence()
 {
   // Assumption that the sequence is always received in full.  No timeout handling, yet.
@@ -247,7 +266,7 @@ void doEscapeSequence()
              {
                restoreCharUnderCursor(); 
                current_row--; 
-               char_under_cursor = getChar(current_row, current_column);  
+               saveCharUnderCursor(); 
              }
              break;
              
@@ -255,7 +274,7 @@ void doEscapeSequence()
              restoreCharUnderCursor();
              current_row++;  
              checkScroll();
-             char_under_cursor = getChar(current_row, current_column);
+             saveCharUnderCursor();
              break;
              
     case 67: // Right
@@ -263,7 +282,7 @@ void doEscapeSequence()
              {
                 restoreCharUnderCursor();
                 current_column++;  
-                char_under_cursor = getChar(current_row, current_column);
+                saveCharUnderCursor();
              }
              break;
              
@@ -272,7 +291,7 @@ void doEscapeSequence()
              {
                restoreCharUnderCursor();
                current_column--; 
-               char_under_cursor = getChar(current_row, current_column);
+               saveCharUnderCursor();
              }
              break;
                
@@ -280,11 +299,11 @@ void doEscapeSequence()
              restoreCharUnderCursor();
              current_row = 0;
              current_column = 0;
-             char_under_cursor = getChar(current_row, current_column);
+             saveCharUnderCursor();
              break;
              
     default: // Ignore all others
-             return;
+             break;
   } 
   uView.display();
 }
