@@ -1,22 +1,22 @@
 /*
-     Teminal Demo
+     Microview Font Printer
 */
 #include <MicroView.h>
 
 void setup()
 {
   uView.begin();	// begin of MicroView  
-  Serial.begin(38400);
+  Serial.begin(2400);
   clearscreen(); 
+  uView.print("READY.");
 }
 
 void clearscreen()
 {
   uView.clear(ALL);	// erase hardware memory inside the OLED controller
   uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
-  uView.setFontType(0);
-  uView.setCursor(0,0);  
-  uView.println("READY.");  
+  uView.setFontType(7);
+  uView.setCursor(0,0);
   uView.display();
 }
   
@@ -29,7 +29,7 @@ void loop()
     {
        if ((c%5) == 0) clearscreen();
       
-       uView.print((int)c);
+       uView.print((byte)c);
        uView.print(" : ");
        uView.print(c);
        uView.println();
