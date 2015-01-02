@@ -57,7 +57,7 @@ void loop()
        {
          current_blink = 1;  
          char_under_cursor = getChar(current_row, current_column);
-         setChar(current_row, current_column, 218); 
+         setChar(current_row, current_column, char_under_cursor+128); // was 218 with font5x7
        }
        else // 1
        {
@@ -86,8 +86,9 @@ void loop()
                   } 
                   break;        
                   
-         case 1:  // CTRL-A, clear    
+         case 12:  // CTRL-L, clear terminal
                   clearscreen();
+                  mySerial.print(c);   // Echo it back
                   return;
                  
          case 13: // Enter      
@@ -112,9 +113,6 @@ void loop()
        last_esc = false;
       
        putChar(c);
-
-       // Echo
-       mySerial.print(c); 
     }     
     
     // Update
@@ -147,13 +145,17 @@ void clearscreen()
 void setupFont(int fontnum)
 {
    uView.setFontType(fontnum);  
-   rows = floor(uView.getLCDHeight() / uView.getFontHeight()) - 1;
-   columns = floor(uView.getLCDWidth() / uView.getFontWidth()) - 1;  
+   rows    = floor(uView.getLCDHeight() / uView.getFontHeight()) - 1;
+   columns = floor(uView.getLCDWidth()  / uView.getFontWidth())  - 1;  
 }
 
 void putChar(char c)
 {
      setChar(current_row, current_column, c);
+     
+     // Echo
+     mySerial.print(c); 
+       
      current_column++;   
      
      if (current_column >= columns)
@@ -196,11 +198,12 @@ void nextLine()
 
 void checkScroll()
 {
-   if (current_row < rows)  // No action needed
-   {
-     return;
-   }
-   
+  if (current_row < rows)  // No action needed
+  {
+    return;
+  }
+  
+  // Move everything up 
   for (int c=0; c<columns; c++)
   {
       for (int r=0; r<rows; r++)
@@ -208,6 +211,13 @@ void checkScroll()
          setChar(r,c,getChar(r+1,c));
       }
   }  
+  
+  // Blank last line
+  for (int c=0; c<columns; c++)
+  {
+    setChar(rows-1,c,SPACE);
+  }
+  
   current_row = rows-1;
   
   uView.display();
