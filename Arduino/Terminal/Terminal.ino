@@ -1,5 +1,6 @@
 /*
-     Teminal Demo for MicroView
+     Teminal and Screen Editor Demo for MicroView
+     Leif Bloomquist, leif@schemafactor.com
 */
 
 #include <MicroView.h>
@@ -13,12 +14,13 @@
 HardwareSerial& mySerial = Serial;
 
 // Global variables
+elapsedMillis cursorBlink = 0;
 int columns = 0;
 int rows = 0;
 int current_column = 0;
 int current_row = 0;
 int current_blink = 0;
-elapsedMillis cursorBlink = 0;
+boolean last_esc = false;
 
 // The virtual screen, assume tiny tiny font  (note the MicroView/Uno only has 3072 bytes SRAM!)
 char screen[20][20] = {0}; // rows, columns
@@ -32,9 +34,17 @@ void setup()
   clearscreen(); 
   cursorBlink = 0;
   
- // uView.println("READY.");
+  putChar('R');
+  putChar('E');
+  putChar('A');
+  putChar('D');
+  putChar('Y');
+  putChar('.');
+  nextLine();
   mySerial.println("READY.");  
 }
+
+char i=0;
 
 void loop() 
 {
@@ -68,6 +78,14 @@ void loop()
                   doEscapeSequence();
                   return;
                   
+         case 126: // Tilde "~" appears at the tail end of some Escape sequences - ignore
+                  if (last_esc == true)
+                  {
+                    last_esc = false; 
+                    return;
+                  } 
+                  break;        
+                  
          case 1:  // CTRL-A, clear    
                   clearscreen();
                   return;
@@ -91,14 +109,9 @@ void loop()
        }
        
        // All others, print character
+       last_esc = false;
       
-       setChar(current_row, current_column, c);
-       current_column++;   
-       
-       if (current_column >= columns)
-       {
-          nextLine();
-       }
+       putChar(c);
 
        // Echo
        mySerial.print(c); 
@@ -134,12 +147,19 @@ void clearscreen()
 void setupFont(int fontnum)
 {
    uView.setFontType(fontnum);  
-   rows = floor(uView.getLCDHeight() / uView.getFontHeight());
-   columns = floor(uView.getLCDWidth() / uView.getFontWidth());  
-   
-   // TODO: Investigate why this is needed
-   rows--;
-   columns--;
+   rows = floor(uView.getLCDHeight() / uView.getFontHeight()) - 1;
+   columns = floor(uView.getLCDWidth() / uView.getFontWidth()) - 1;  
+}
+
+void putChar(char c)
+{
+     setChar(current_row, current_column, c);
+     current_column++;   
+     
+     if (current_column >= columns)
+     {
+        nextLine();
+     }
 }
 
 void setChar(int row, int column, char c)
@@ -202,10 +222,13 @@ void doEscapeSequence()
 {
   // Assumption that the sequence is always received in full.  No timeout handling, yet.
   char c1 = getByte();
-  char c2 = getByte();
   
   // We only handle cursor movement.  Ignore all others.
   if (c1 != 0x5B) return;
+  
+  last_esc = true;
+  
+  char c2 = getByte();
   
   switch (c2)
   {
@@ -242,10 +265,17 @@ void doEscapeSequence()
                char_under_cursor = getChar(current_row, current_column);
              }
              break;
+               
+    case 49: // Home
+             restoreCharUnderCursor();
+             current_row = 0;
+             current_column = 0;
+             char_under_cursor = getChar(current_row, current_column);
+             break;
              
     default: // Ignore all others
              return;
-  }
+  } 
   uView.display();
 }
       
@@ -260,17 +290,4 @@ byte getByte()
  
   byte inByte = mySerial.read();
   return inByte;
-}
-
-         
-
-     /* Font Tests
-     clearscreen(); 
-     uView.print((int)i);
-     uView.print("=");
-     uView.println(i);
-     uView.display();
-     i++;
-     */
-       
-       
+}       
