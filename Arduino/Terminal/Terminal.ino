@@ -15,7 +15,7 @@
   #define BAUD 2400
   SoftwareSerial mySerial(2, 3); // RX, TX
 #else
-  #define BAUD 2400
+  #define BAUD 38400
   HardwareSerial& mySerial = Serial;
 #endif
 
