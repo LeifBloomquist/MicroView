@@ -9,7 +9,7 @@
 ;  // Keep this here to pacify the Arduino pre-processor
 
 //#define C64
-#define C64FONT
+//#define C64FONT
 
 #ifdef C64
   #include <SoftwareSerial.h>
@@ -20,14 +20,16 @@
   HardwareSerial& mySerial = Serial;
 #endif
 
-#ifdef C64FONT
+#ifdef C64FONT    // C64 font for MicroView
   #define FONT 7
   #define CURSOR  char_under_cursor+128
   #define MARGIN 0
+  #define COL_ADJUST 0
 #else
   #define FONT 0  // Built-in 5x7 font
   #define CURSOR 218
   #define MARGIN 1
+  #define COL_ADJUST 2  // Not sure why this is needed
 #endif
 
 #define BLINK 333    // milliseconds
@@ -82,7 +84,7 @@ void loop()
        {
          current_blink = 1;  
          saveCharUnderCursor();
-         setChar(current_row, current_column, CURSOR); // was 218 with font5x7
+         setChar(current_row, current_column, CURSOR);
        }
        else // 1
        {
@@ -169,8 +171,8 @@ void clearScreen()
 void setupFont(int fontnum)
 {
    uView.setFontType(fontnum);  
-   rows    = floor(uView.getLCDHeight() / uView.getFontHeight()) - 1;
-   columns = floor(uView.getLCDWidth()  / uView.getFontWidth())  - 1;  
+   rows    = floor(uView.getLCDHeight() / uView.getFontHeight()) ;
+   columns = floor(uView.getLCDWidth()  / uView.getFontWidth())  ;  
 }
 
 void putChar(char c)
@@ -183,7 +185,7 @@ void putChar(char c)
      current_column++;   
      saveCharUnderCursor();
      
-     if (current_column >= columns)
+     if (current_column >= (columns-COL_ADJUST))
      {
         nextLine();
      }
@@ -199,7 +201,7 @@ void setChar(int row, int column, char c)
   
   screen[row][column] = c;
   
-  int realr = row*(uView.getFontHeight() + MARGIN);
+  int realr = row*(uView.getFontHeight());
   int realc = column*(uView.getFontWidth() + MARGIN);
   uView.setCursor(realc,realr);
   uView.print(c);
