@@ -116,6 +116,7 @@ void loop()
                      current_column--; 
                      char_under_cursor = SPACE;
                      restoreCharUnderCursor();
+                     mySerial.print(c);   // Echo it back
                    }
                    return;
                   
