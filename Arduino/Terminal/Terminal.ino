@@ -9,6 +9,7 @@
 ;  // Keep this here to pacify the Arduino pre-processor
 
 //#define C64
+//#define C64FONT
 
 #ifdef C64
   #include <SoftwareSerial.h>
@@ -17,6 +18,14 @@
 #else
   #define BAUD 38400
   HardwareSerial& mySerial = Serial;
+#endif
+
+#ifdef C64FONT
+  #define FONT 7
+  #define CURSOR  char_under_cursor+128
+#else
+  #define FONT 0  // Built-in 5x7 font
+  #define CURSOR 218
 #endif
 
 #define BLINK 333    // milliseconds
@@ -41,6 +50,8 @@ void setup()
 {
   uView.begin();	// begin of MicroView  
   mySerial.begin(BAUD);
+  
+  setupFont(FONT);
 
   clearScreen();   
   putChar('R');
@@ -69,7 +80,7 @@ void loop()
        {
          current_blink = 1;  
          saveCharUnderCursor();
-         setChar(current_row, current_column, char_under_cursor+128); // was 218 with font5x7
+         setChar(current_row, current_column, CURSOR); // was 218 with font5x7
        }
        else // 1
        {
@@ -138,8 +149,6 @@ void clearScreen()
   uView.clear(ALL);	// erase hardware memory inside the OLED controller
   uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
   uView.display();
-  
-  setupFont(7);  
   uView.setCursor(0,0);
 
   current_column = 0;

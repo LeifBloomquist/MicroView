@@ -6,7 +6,7 @@
 void setup()
 {
   uView.begin();	// begin of MicroView  
-  Serial.begin(2400);
+  Serial.begin(38400);
   clearscreen(); 
   uView.print("READY.");
   uView.display();
@@ -16,7 +16,7 @@ void clearscreen()
 {
   uView.clear(ALL);	// erase hardware memory inside the OLED controller
   uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
-  uView.setFontType(1);
+  uView.setFontType(7);
   uView.setCursor(0,0);
   uView.display();
 }
