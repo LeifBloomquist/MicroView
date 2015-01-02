@@ -139,7 +139,7 @@ void clearScreen()
   uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
   uView.display();
   
-  setupFont(0);  
+  setupFont(1);  
   uView.setCursor(0,0);
 
   current_column = 0;
