@@ -9,7 +9,7 @@
 ;  // Keep this here to pacify the Arduino pre-processor
 
 //#define C64
-//#define C64FONT
+#define C64FONT
 
 #ifdef C64
   #include <SoftwareSerial.h>
@@ -23,9 +23,11 @@
 #ifdef C64FONT
   #define FONT 7
   #define CURSOR  char_under_cursor+128
+  #define MARGIN 0
 #else
   #define FONT 0  // Built-in 5x7 font
   #define CURSOR 218
+  #define MARGIN 1
 #endif
 
 #define BLINK 333    // milliseconds
@@ -134,9 +136,9 @@ void loop()
        }
        
        // All others, print character
-       last_esc = false;
-      
        putChar(c);
+       
+       last_esc = false;
     }     
     
     // Update
@@ -197,8 +199,8 @@ void setChar(int row, int column, char c)
   
   screen[row][column] = c;
   
-  int realr = row*(uView.getFontHeight()+1);
-  int realc = column*(uView.getFontWidth()+1);
+  int realr = row*(uView.getFontHeight() + MARGIN);
+  int realc = column*(uView.getFontWidth() + MARGIN);
   uView.setCursor(realc,realr);
   uView.print(c);
 }
