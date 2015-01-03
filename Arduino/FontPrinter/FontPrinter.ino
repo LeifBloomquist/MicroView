@@ -1,5 +1,6 @@
 /*
      Microview Font Printer
+     Leif Bloomquist
 */
 #include <MicroView.h>
 
@@ -8,7 +9,8 @@ void setup()
   uView.begin();	// begin of MicroView  
   Serial.begin(38400);
   clearscreen(); 
-  uView.print("READY.");
+  uView.println("READY.");
+  uView.println("Press\nSpace\n or b");
   uView.display();
 }
 
@@ -16,7 +18,7 @@ void clearscreen()
 {
   uView.clear(ALL);	// erase hardware memory inside the OLED controller
   uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
-  uView.setFontType(7);
+  uView.setFontType(8);
   uView.setCursor(0,0);
   uView.display();
 }
