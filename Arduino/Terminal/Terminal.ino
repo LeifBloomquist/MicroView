@@ -71,8 +71,6 @@ void setup()
   cursor_blink = 0;
 }
 
-char i=0;
-
 void loop() 
 {
     // Blink Cursor
