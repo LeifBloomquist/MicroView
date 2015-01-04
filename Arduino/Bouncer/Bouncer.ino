@@ -1,5 +1,5 @@
 /*
-     A swinthy style demo.
+     Silly sample program.
 */
 #include <MicroView.h>
 
@@ -17,13 +17,12 @@ void loop()
 {
 	int onDelay=20;
 	uView.setFontType(0);
-	uView.setCursor(0,0);
-	//uView.print("Hello everyone this is Leif's first program!");    
+	uView.setCursor(0,0);	
 	uView.display();
 	delay(500);
 
-        int max_x = 10;
-        int max_y = 40;
+        int max_x = 20;
+        int max_y = uView.getLCDHeight() - uView.getFontHeight();
         
         int x0=random(max_x);
     	int x1=random(max_x);
@@ -37,20 +36,13 @@ void loop()
         
         while (true)
         {
-     //      uView.line(x0,y0,x1,y1, WHITE, XOR);		// draw line from x0,y0 to x1,y1 using WHITE color and XOR draw mode
-        //  uView.line(max_x-x0,y0,max_x-x1,y1, WHITE, XOR);   // Mirror
-
           uView.clear(PAGE);	// erase the memory buffer, when next uView.display() is called, the OLED will be cleared.
-      	  uView.setCursor(x0,y0);
-          char c = 3;      
+      	  uView.setCursor(x0,y0);            
           uView.print("Ella ");
+          char c = 3;   
           uView.print(c);
           uView.display();
-          delay(onDelay);   
-       
-          //uView.line(x0,y0,x1,y1, WHITE,XOR);
-          //uView.line(max_x-x0,y0,max_x-x1,y1, WHITE, XOR);		// Mirror
-          //uView.display();
+          delay(onDelay); 
           
           x0 += dx0;
           y0 += dy0;
@@ -60,8 +52,7 @@ void loop()
           if ((x0 > max_x) || (x0 < 1)) dx0=-dx0;        
           if ((y0 > max_y) || (y0 < 1)) dy0=-dy0;        
           if ((x1 > max_x) || (x1 < 1)) dx1=-dx1;        
-          if ((y1 > max_y) || (y1 < 1)) dy1=-dy1;        
-          
+          if ((y1 > max_y) || (y1 < 1)) dy1=-dy1;                 
 	}
 }
 
