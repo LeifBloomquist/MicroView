@@ -27,17 +27,16 @@ void loop()
   float z_scaled = Scale(z, 395, 595);
   
   ClearScreen();
-  /*
   uView.println("ADXL335\n");
   uView.print("X: ");     uView.println(x_scaled);
   uView.print("Y: ");     uView.println(y_scaled);
   uView.print("Z: ");     uView.println(z_scaled);
-  */
   
-  uView.circle(center_x + (x_scaled*SCALING),
+  uView.circleFill(
+               center_x + (x_scaled*SCALING),
                center_y - (z_scaled*SCALING),    // ADXL335 is mounted sideways!
-               5 //+        (y_scaled*SCALING)
-              );
+               5, //+        (y_scaled*SCALING)
+               WHITE, XOR);
                  
   uView.display();
   delay(50);
