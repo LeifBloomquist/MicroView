@@ -24,12 +24,12 @@
   #define FONT 7
   #define CURSOR  char_under_cursor+128
   #define MARGIN 0
-  #define COL_ADJUST 0
+  #define COL_FIX 0
 #else
   #define FONT 0  // Built-in 5x7 font
   #define CURSOR 218
   #define MARGIN 1
-  #define COL_ADJUST 2  // Not sure why this is needed
+  #define COL_FIX 2  // Not sure why this is needed
 #endif
 
 #define BLINK 333    // milliseconds
@@ -185,7 +185,7 @@ void putChar(char c)
      current_column++;   
      saveCharUnderCursor();
      
-     if (current_column >= (columns-COL_ADJUST))
+     if (current_column >= (columns-COL_FIX))
      {
         nextLine();
      }
@@ -292,7 +292,7 @@ void doEscapeSequence()
              break;
              
     case 67: // Right
-             if (current_column < (columns-1))
+             if (current_column < (columns-COL_FIX-1))
              {
                 restoreCharUnderCursor();
                 current_column++;  
