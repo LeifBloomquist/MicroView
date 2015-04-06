@@ -8,12 +8,12 @@
 
 ;  // Keep this here to pacify the Arduino pre-processor
 
-//#define C64
+#define C64
 //#define C64FONT
 
 #ifdef C64
   #include <SoftwareSerial.h>
-  #define BAUD 2400
+  #define BAUD 57600
   SoftwareSerial mySerial(2, 3); // RX, TX
 #else
   #define BAUD 38400
@@ -58,6 +58,15 @@ void setup()
   setupFont(FONT);
 
   clearScreen();   
+  
+  uView.println("Hi Jenna. It works!");
+  uView.print((char)3);
+  
+  uView.display();
+  return;
+
+
+
   putChar('R');
   putChar('E');
   putChar('A');
@@ -72,7 +81,8 @@ void setup()
 }
 
 void loop() 
-{
+{  
+  return;
     // Blink Cursor
     if (cursor_blink > BLINK)
     {
@@ -113,7 +123,8 @@ void loop()
                   
          case 12:  // CTRL-L, Clear terminal
                   clearScreen();
-                  mySerial.print(c);   // Echo it back
+               //   mySerial.print(c);   // Echo it back
+                  mySerial.print("AB");
                   return;
                  
          case 13: // Enter      
@@ -178,7 +189,7 @@ void putChar(char c)
      setChar(current_row, current_column, c);
      
      // Echo
-     mySerial.print(c); 
+     //mySerial.print(c); 
        
      current_column++;   
      saveCharUnderCursor();
@@ -219,7 +230,7 @@ void nextLine()
    checkScroll();
    saveCharUnderCursor();
    
-   mySerial.println();
+  // mySerial.println();
 }
 
 void checkScroll()
