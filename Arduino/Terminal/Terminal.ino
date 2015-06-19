@@ -66,8 +66,6 @@ void setup()
   putChar('.');
   nextLine();
   
-  mySerial.println("READY.");  
-  
   cursor_blink = 0;
 }
 
