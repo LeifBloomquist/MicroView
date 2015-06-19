@@ -13,8 +13,8 @@
 
 #ifdef C64
   #include <SoftwareSerial.h>
-  #define BAUD 57600
-  SoftwareSerial mySerial(2, 3); // RX, TX
+  #define BAUD 2400
+  SoftwareSerial mySerial(5, 6);   // RX, TX
 #else
   #define BAUD 38400
   HardwareSerial& mySerial = Serial;
@@ -56,16 +56,7 @@ void setup()
   mySerial.begin(BAUD);
   
   setupFont(FONT);
-
-  clearScreen();   
-  
-  uView.println("Hi Jenna. It works!");
-  uView.print((char)3);
-  
-  uView.display();
-  return;
-
-
+  clearScreen();
 
   putChar('R');
   putChar('E');
@@ -82,7 +73,6 @@ void setup()
 
 void loop() 
 {  
-  return;
     // Blink Cursor
     if (cursor_blink > BLINK)
     {
@@ -123,8 +113,7 @@ void loop()
                   
          case 12:  // CTRL-L, Clear terminal
                   clearScreen();
-               //   mySerial.print(c);   // Echo it back
-                  mySerial.print("AB");
+                  mySerial.print(c);   // Echo it back
                   return;
                  
          case 13: // Enter      
@@ -189,7 +178,7 @@ void putChar(char c)
      setChar(current_row, current_column, c);
      
      // Echo
-     //mySerial.print(c); 
+     mySerial.print(c); 
        
      current_column++;   
      saveCharUnderCursor();
@@ -230,7 +219,7 @@ void nextLine()
    checkScroll();
    saveCharUnderCursor();
    
-  // mySerial.println();
+   mySerial.println();
 }
 
 void checkScroll()
@@ -342,4 +331,6 @@ byte getByte()
  
   byte inByte = mySerial.read();
   return inByte;
-}       
+}
+
+// EOF
