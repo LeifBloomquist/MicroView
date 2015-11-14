@@ -16,7 +16,7 @@ int max_y = uView.getLCDHeight();
 int mid_y = max_y/2;
 int last_y = mid_y;
 
-float alpha = 0.1; // factor to tune
+float alpha = 0.3; // factor to tune
 float average = 0.5;
 
 void setup() 
@@ -43,7 +43,7 @@ void loop()
     average = (alpha * audio) + ((1-alpha) * average);
     
     // Plot
-    int pos_y = average*max_y; //mid_y+(audio*max_y);
+    int pos_y = average*max_y;
     uView.line(pos_x-1, last_y, pos_x, pos_y);
     last_y = pos_y;
   }
