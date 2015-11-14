@@ -1,5 +1,5 @@
 /*
-    Sound Viewer with the Sparkfun SEN-12642 Sound Detector
+    Sound Viewer with the Sparkfun BOB-09964 Electret Microphone
 */
 #include <MicroView.h>
 
