@@ -1,6 +1,6 @@
 /*
      Teminal and Rudimentary Screen Editor Demo for MicroView
-     Leif Bloomquist
+     Leif Bloomquist     
 */
 
 #include <MicroView.h>
