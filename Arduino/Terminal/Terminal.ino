@@ -13,7 +13,7 @@
 
 #ifdef C64
   #include <SoftwareSerial.h>
-  #define BAUD 9600   // was 2400
+  #define BAUD 2400
   SoftwareSerial mySerial(5, 6);   // RX, TX
 #else
   #define BAUD 38400

@@ -1,5 +1,5 @@
 /*
-     A Swinthy style demo.
+     A Swinthy style demo.      
      Leif Bloomquist
 */
 #include <MicroView.h>
